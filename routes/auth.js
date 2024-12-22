@@ -4,6 +4,49 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/Userr');
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Auto-generated ID of the user
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         password:
+ *           type: string
+ *           description: The password of the user
+ *       example:
+ *         username: testuser
+ *         password: password123
+ */
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Invalid input
+ */
+
 // Register
 router.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -16,6 +59,35 @@ router.post('/register', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Log in a user and get a JWT token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token
+ *       400:
+ *         description: Invalid username or password
+ */
 
 // Login
 router.post('/login', async (req, res) => {
